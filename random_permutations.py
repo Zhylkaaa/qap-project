@@ -13,7 +13,7 @@ if __name__ == '__main__':
     diffs = []
     for _ in range(1000):
         diffs.append(
-            objective(np.random.permutation(n), dists, costs)
+            objective(np.random.permutation(n), dists, costs) - opt
         )
 
     print(f'mean difference for random permutations is {np.mean(diffs)}, min {np.min(diffs)}, max {np.max(diffs)}\n'
