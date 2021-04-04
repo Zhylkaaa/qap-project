@@ -37,7 +37,7 @@ def load_example(file_path: str,
         check_prefix: (optional) argument specifies if .dat is required extension.
         dist_first: (optional) weather distance matrix goes first in the .dat file
     Returns:
-        tuple containing size of a problem, weights matrix and costs matrix.
+        tuple containing size of a problem, dists matrix and costs matrix.
     """
     assert os.path.exists(file_path), "file does not exists"
 
@@ -89,5 +89,6 @@ def load_solution(file_path: str,
 
         n, opt = map(int, rows[0].split())
         permutation = np.array(list(map(int, '\t'.join(rows[1:]).split())))
+        permutation -= 1 if permutation.max() == n else 0  # to account for 0 indexed arrays
 
     return n, opt, permutation
