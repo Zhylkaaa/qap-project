@@ -22,7 +22,7 @@ class OrderedCrossover(CrossoverMechanism):
         self.count = crossover_count
         self.retry_count = crossover_retry
 
-    def cross_genes(self, a: Chromosome, b: Chromosome):
+    def _cross_genes(self, a: Chromosome, b: Chromosome):
         new_perm = np.zeros_like(a.permutation)
         start, finish = np.sort(
             np.random.choice(new_perm.shape[0], size=2, replace=False))
@@ -31,7 +31,11 @@ class OrderedCrossover(CrossoverMechanism):
         new_perm[parent_mask] = a.permutation[parent_mask]
         new_perm[~parent_mask] = b.permutation[np.isin(
             b.permutation, a.permutation[parent_mask], invert=True)]
+
         return Chromosome(new_perm, calculate_cost=False)
+
+    def cross_genes(self, a: Chromosome, b: Chromosome):
+        return [self._cross_genes(a, b), self._cross_genes(b, a)]
 
     def crossover(self, population: List[Chromosome]) -> List[Chromosome]:
         descendants = set()
@@ -39,16 +43,18 @@ class OrderedCrossover(CrossoverMechanism):
         probs = probs / np.sum(probs)
 
         for _ in range(self.count):
-            child = self.cross_genes(
+            children = self.cross_genes(
                 *random.choices(population, weights=probs, k=2))
             c = 0
-            while child in descendants and c < self.retry_count:
-                child = self.cross_genes(
+            while children[0] in descendants and children[1] in descendants and c < self.retry_count:
+                children = self.cross_genes(
                     *random.choices(population, weights=probs, k=2))
                 c += 1
             if c == self.retry_count:
-                child = Chromosome(generate_random_solutions(
-                    child.permutation.shape[0], 1).squeeze(),
-                                   calculate_cost=False)
-            descendants.add(child)
+                children = [
+                    Chromosome(p, calculate_cost=False)
+                    for p in generate_random_solutions(
+                        children[0].permutation.shape[0], 1)
+                ]
+            descendants.update(children)
         return [d.calculate_cost() for d in descendants]

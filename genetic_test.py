@@ -8,7 +8,7 @@ if __name__ == '__main__':
     _, opt, permutation = load_solution('data/qapsoln/kra30a.sln')
 
     assert opt == objective(dists, costs,
-                                  permutation), "something wrong with objective"
+                            permutation), "something wrong with objective"
 
     # TODO: hiperparameter tuning with WandB?
     res = genetic_solver(n,
