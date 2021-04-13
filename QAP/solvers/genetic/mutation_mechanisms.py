@@ -26,4 +26,5 @@ class SwapMutation(MutationMechanism):
                                         size=2,
                                         replace=False)
                 chromosome.permutation[[i, j]] = chromosome.permutation[[j, i]]
+                chromosome.calculate_cost()
         return population
