@@ -8,6 +8,7 @@ from .mutation_mechanisms import MutationMechanism, SwapMutation
 from .crossover_mechanisms import CrossoverMechanism, OrderedCrossover
 from .chromosome import Chromosome
 from QAP.objective import objective
+from tqdm import tqdm
 
 
 def genetic_solver(n: int,
@@ -67,7 +68,7 @@ def genetic_solver(n: int,
     selection = selection_mechanism(**selection_args)
 
     # TODO: probably use convergence and perturbation criterion
-    for _ in range(max_iterations):
+    for _ in tqdm(range(max_iterations)):
         new_generation = mutation(crossover(population))
         population = population + new_generation
 
