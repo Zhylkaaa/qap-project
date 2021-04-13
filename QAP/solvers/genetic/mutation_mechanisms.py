@@ -16,10 +16,14 @@ class MutationMechanism:
 
 class SwapMutation(MutationMechanism):
 
+    def __init__(self, mutation_prob: float = 0.5):
+        self.mutation_prob = mutation_prob
+
     def mutate(self, population: List[Chromosome]) -> List[Chromosome]:
         for chromosome in population:
-            i, j = np.random.choice(chromosome.permutation.shape[0],
-                                    size=2,
-                                    replace=True)
-            chromosome.permutation[[i, j]] = chromosome.permutation[[j, i]]
+            if np.random.sample() <= self.mutation_prob:
+                i, j = np.random.choice(chromosome.permutation.shape[0],
+                                        size=2,
+                                        replace=False)
+                chromosome.permutation[[i, j]] = chromosome.permutation[[j, i]]
         return population

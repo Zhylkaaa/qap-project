@@ -19,7 +19,7 @@ class Chromosome:
         return self.cost > other.cost
 
     def __eq__(self, other):
-        return self.cost == other.cost
+        return np.all(self.permutation == other.permutation)
 
     def __hash__(self):
         return hash(tuple(self.permutation))

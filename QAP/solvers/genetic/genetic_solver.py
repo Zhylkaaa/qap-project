@@ -21,6 +21,7 @@ def genetic_solver(n: int,
                    crossover_mechanism: CrossoverMechanism = OrderedCrossover,
                    mutation_mechanism: MutationMechanism = SwapMutation,
                    selection_mechanism: SelectionMechanism = RouletteWheel,
+                   bad_epoch_patience: int = 20,
                    **kwargs) -> np.ndarray:
     """Genetic algorithm solver for QAP.
     Args:
@@ -33,6 +34,7 @@ def genetic_solver(n: int,
         crossover_mechanism: (optional) class that implements CrossoverMechanism and provides crossover mechanism
         mutation_mechanism: (optional) class that implements MutationMechanism and provides mutation mechanism
         selection_mechanism: (optional) class that implements SelectionMechanism and provides selection mechanism
+        bad_epoch_patience: (optional) number of allowed bad epochs before perturbation
         kwargs: (optional) used to pass optional arguments to selection_mechanism
     Returns:
         Permutation that achieves the best objective score on the task
@@ -67,11 +69,27 @@ def genetic_solver(n: int,
     mutation = mutation_mechanism(**mutation_args)
     selection = selection_mechanism(**selection_args)
 
-    # TODO: probably use convergence and perturbation criterion
+    best_solution = max(population)
+    bad_epoch_counter = 0
+    # TODO: probably use convergence criterion
     for _ in tqdm(range(max_iterations)):
         new_generation = mutation(crossover(population))
-        population = population + new_generation
+        population.extend(new_generation)
 
         population = selection(population)
+        population_best = max(population)
+        if best_solution.cost > population_best.cost:
+            best_solution = population_best
+        else:
+            bad_epoch_counter += 1
+            if bad_epoch_counter == bad_epoch_patience:
+                population.extend([
+                    Chromosome(solution) for solution in
+                    generate_random_solutions(n, size=population_size)
+                ])
+                population_best = max(population)
+                best_solution = max(best_solution, population_best)
+                population = selection(population)
+                bad_epoch_counter = 0
 
-    return max(population)
+    return best_solution
