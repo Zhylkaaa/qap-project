@@ -19,7 +19,9 @@ class SwapMutation(MutationMechanism):
     def __init__(self, mutation_prob: float = 0.5):
         self.mutation_prob = mutation_prob
 
-    def mutate(self, population: List[Chromosome]) -> List[Chromosome]:
+    # TODO full numpy
+    def mutate(self,
+               population: np.ndarray) -> np.ndarray:
         for chromosome in population:
             if np.random.sample() <= self.mutation_prob:
                 i, j = np.random.choice(chromosome.permutation.shape[0],

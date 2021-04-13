@@ -43,10 +43,10 @@ def genetic_solver(n: int,
     objective = partial(objective, dist, cost)
     Chromosome.objective = objective
 
-    population = [
+    population = np.array([
         Chromosome(solution)
         for solution in generate_random_solutions(n, size=population_size)
-    ]
+    ])
 
     # maybe cut prefix off?
     crossover_args = {
@@ -72,9 +72,13 @@ def genetic_solver(n: int,
     best_solution = max(population)
     bad_epoch_counter = 0
     # TODO: probably use convergence criterion
-    for _ in tqdm(range(max_iterations)):
+    for i in tqdm(range(max_iterations)):
+        if i % 1000 == 0:
+            print(best_solution)
         new_generation = mutation(crossover(population))
-        population.extend(new_generation)
+        population = np.concatenate((population,
+                                     new_generation),
+                                    axis=0)
 
         population = selection(population)
         population_best = max(population)
@@ -83,10 +87,14 @@ def genetic_solver(n: int,
         else:
             bad_epoch_counter += 1
             if bad_epoch_counter == bad_epoch_patience:
-                population.extend([
+                population = mutation(population)
+                random_population = [
                     Chromosome(solution) for solution in
                     generate_random_solutions(n, size=population_size)
-                ])
+                ]
+                population = np.concatenate((population,
+                                            random_population),
+                                            axis=0)
                 population_best = max(population)
                 best_solution = max(best_solution, population_best)
                 population = selection(population)

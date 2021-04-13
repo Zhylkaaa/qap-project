@@ -23,3 +23,6 @@ class Chromosome:
 
     def __hash__(self):
         return hash(tuple(self.permutation))
+
+    def __str__(self):
+        return f'result: {self.cost}, permutation: {self.permutation}'
