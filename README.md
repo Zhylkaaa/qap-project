@@ -5,7 +5,7 @@ Approximate solution algorithms for QAP
 All data was downloaded from [QAPLIB](https://coral.ise.lehigh.edu/data-sets/qaplib/qaplib-problem-instances-and-solutions/#KP)
 I haven't found any license file, so I guess this note is enough
 
-## Instalation
+## Installation
 
 use this command to install library in editable mode:
 
