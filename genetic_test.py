@@ -22,5 +22,8 @@ if __name__ == '__main__':
                          selection_size=1000,
                          crossover_count=500,
                          mutation_prob=0.5)
-    print(res.permutation, res.cost)
+
+    print('=======================================')
+    print(f'result permutation: {res.permutation}')
+    print(f'result solution: {res.cost}')
     print(f'optimal solution: {opt}')
