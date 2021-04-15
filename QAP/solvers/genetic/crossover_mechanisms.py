@@ -91,3 +91,6 @@ class OrderedCrossover(CrossoverMechanism):
 
             descendants.update(child)
         return np.array([d.calculate_cost() for d in descendants])  # don't forget to calculate cost
+
+
+# TODO: implement PMX crossover

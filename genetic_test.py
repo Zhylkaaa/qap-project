@@ -4,8 +4,8 @@ from QAP.solvers.genetic import genetic_solver
 import numpy as np
 
 if __name__ == '__main__':
-    n, dists, costs = load_example('data/qapdata/kra30a.dat', dist_first=True)
-    _, opt, permutation = load_solution('data/qapsoln/kra30a.sln')
+    n, dists, costs = load_example('data/qapdata/nug30.dat', dist_first=False)
+    _, opt, permutation = load_solution('data/qapsoln/nug30.sln')
 
     assert opt == objective(dists, costs,
                             permutation), "something wrong with objective"
@@ -16,12 +16,12 @@ if __name__ == '__main__':
                          costs,
                          objective,
                          max_iterations=1000,
-                         population_size=1000,
+                         population_size=100,
                          verbose=True,
                          print_every=100,
-                         selection_size=1000,
-                         crossover_count=500,
-                         mutation_prob=0.5)
+                         selection_size=100,
+                         crossover_count=50,
+                         mutation_prob=0.1)
 
     print('=======================================')
     print(f'result permutation: {res.permutation}')

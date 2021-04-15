@@ -28,6 +28,7 @@ def _parse_matrix(n: int,
     return np.array(result), step * n + offset
 
 
+# TODO: fix: nug30 problem isn't readable for example
 def load_example(file_path: str,
                  check_prefix: bool = True,
                  dist_first: bool = True) -> Tuple[int, np.ndarray, np.ndarray]:
