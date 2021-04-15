@@ -16,9 +16,11 @@ if __name__ == '__main__':
                          costs,
                          objective,
                          max_iterations=1000,
-                         population_size=300,
-                         selection_size=300,
-                         crossover_count=100,
-                         mutation_prob=0.2)
+                         population_size=1000,
+                         verbose=True,
+                         print_every=100,
+                         selection_size=1000,
+                         crossover_count=500,
+                         mutation_prob=0.5)
     print(res.permutation, res.cost)
     print(f'optimal solution: {opt}')

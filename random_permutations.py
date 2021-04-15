@@ -4,10 +4,10 @@ import numpy as np
 
 if __name__ == '__main__':
 
-    n, dists, costs = load_example('data/qapdata/lipa20a.dat', dist_first=False)
-    _, opt, permutation = load_solution('data/qapsoln/lipa20a.sln')
+    n, dists, costs = load_example('data/qapdata/kra30a.dat', dist_first=True)
+    _, opt, permutation = load_solution('data/qapsoln/kra30a.sln')
 
-    assert opt == naive_objective(dists, costs,
+    assert opt == objective(dists, costs,
                                   permutation), "something wrong with objective"
 
     np.random.seed(1234)

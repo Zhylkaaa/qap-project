@@ -18,6 +18,8 @@ def genetic_solver(n: int,
                                        int] = objective,
                    max_iterations: int = 100,
                    population_size: int = 100,
+                   verbose: bool = True,
+                   print_every: int = 100,
                    crossover_mechanism: CrossoverMechanism = OrderedCrossover,
                    mutation_mechanism: MutationMechanism = SwapMutation,
                    selection_mechanism: SelectionMechanism = RouletteWheel,
@@ -31,6 +33,8 @@ def genetic_solver(n: int,
         objective: (optional) objective function that accepts dist, cost and permutation and returns calculated objective
         max_iterations: (optional) computational budget
         population_size: (optional) size of the population
+        verbose: (optional) weather to print intermediate results
+        print_every: (optional) frequency of prints
         crossover_mechanism: (optional) class that implements CrossoverMechanism and provides crossover mechanism
         mutation_mechanism: (optional) class that implements MutationMechanism and provides mutation mechanism
         selection_mechanism: (optional) class that implements SelectionMechanism and provides selection mechanism
@@ -48,7 +52,7 @@ def genetic_solver(n: int,
         for solution in generate_random_solutions(n, size=population_size)
     ])
 
-    # maybe cut prefix off?
+    # get args for each component
     crossover_args = {
         key: value
         for key, value in kwargs.items()
@@ -65,6 +69,7 @@ def genetic_solver(n: int,
         if re.match('selection_*', key)
     }
 
+    # initialize components
     crossover = crossover_mechanism(**crossover_args)
     mutation = mutation_mechanism(**mutation_args)
     selection = selection_mechanism(**selection_args)
@@ -72,8 +77,9 @@ def genetic_solver(n: int,
     best_solution = max(population)
     bad_epoch_counter = 0
     # TODO: probably use convergence criterion
+    # TODO: tqdm should be optional (only when verbose is True)
     for i in tqdm(range(max_iterations)):
-        if i % 1000 == 0:
+        if verbose and i % print_every == 0:
             print(best_solution)
         new_generation = mutation(crossover(population))
         population = np.concatenate((population,
