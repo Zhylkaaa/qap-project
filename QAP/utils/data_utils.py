@@ -89,6 +89,7 @@ def load_solution(file_path: str,
 
         n, opt = map(int, rows[0].split())
         permutation = np.array(list(map(int, '\t'.join(rows[1:]).split())))
-        permutation -= 1 if permutation.max() == n else 0  # to account for 0 indexed arrays
+        permutation -= 1 if permutation.max(
+        ) == n else 0  # to account for 0 indexed arrays
 
     return n, opt, permutation
