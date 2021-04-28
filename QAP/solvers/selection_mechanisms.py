@@ -6,6 +6,9 @@ class SelectionMechanism:
     """Abstract class for selection mechanism.
     Each descendant must implement `select` function that gets called with `()` syntax
     """
+    def __init__(self, *args, **kwargs):
+        pass
+
     def select(self, generation: np.ndarray):
         raise NotImplementedError(
             'this is abstract class method and should be implemented by descendants'
@@ -31,3 +34,7 @@ class RouletteWheel(SelectionMechanism):
                                 replace=False,
                                 size=self.selection_size,
                                 p=probs)
+
+
+class BestFit(SelectionMechanism):
+    pass

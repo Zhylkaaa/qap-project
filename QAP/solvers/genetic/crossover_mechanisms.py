@@ -8,6 +8,9 @@ class CrossoverMechanism:
     """Abstract class for crossover mechanism.
     Each descendant must implement `crossover` function that gets called with `()` syntax
     """
+    def __init__(self, *args, **kwargs):
+        pass
+
     def crossover(self, generation: np.ndarray):
         raise NotImplementedError(
             'this is abstract class method and should be implemented by descendants'
