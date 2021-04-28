@@ -7,9 +7,9 @@ def generate_random_solutions(n: int, size: int = 100) -> np.ndarray:
         n: size of a problem
         size: (optional) number of permutations
     Returns:
-        ndarray permutation matrix of shape (size, n)
+        ndarray permutations matrix of shape (size, n)
     """
-    return np.stack([np.random.permutation(n) for _ in range(size)], axis=0)
+    return np.stack([np.random.permutation(n) for _ in range(size)], axis=0) if size > 0 else np.array([], dtype=np.object_)
 
 
 # TODO: check if naive implementation is faster

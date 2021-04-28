@@ -3,12 +3,13 @@ from functools import partial
 import numpy as np
 import re
 from QAP.utils.solver_utils import generate_random_solutions
-from .selection_mechanisms import SelectionMechanism, RouletteWheel
-from .mutation_mechanisms import MutationMechanism, SwapMutation
+from QAP.solvers.selection_mechanisms import SelectionMechanism, RouletteWheel
+from QAP.solvers.mutation_mechanisms import MutationMechanism, SwapMutation
 from .crossover_mechanisms import CrossoverMechanism, OrderedCrossover
 from .chromosome import Chromosome
 from QAP.objective import objective
 from tqdm import tqdm
+from typing import Type
 
 
 def genetic_solver(n: int,
@@ -20,9 +21,9 @@ def genetic_solver(n: int,
                    population_size: int = 100,
                    verbose: bool = True,
                    print_every: int = 100,
-                   crossover_mechanism: CrossoverMechanism = OrderedCrossover,
-                   mutation_mechanism: MutationMechanism = SwapMutation,
-                   selection_mechanism: SelectionMechanism = RouletteWheel,
+                   crossover_mechanism: Type[CrossoverMechanism] = OrderedCrossover,
+                   mutation_mechanism: Type[MutationMechanism] = SwapMutation,
+                   selection_mechanism: Type[SelectionMechanism] = RouletteWheel,
                    bad_epoch_patience: int = 20,
                    **kwargs) -> np.ndarray:
     """Genetic algorithm solver for QAP.
@@ -77,8 +78,8 @@ def genetic_solver(n: int,
     best_solution = max(population)
     bad_epoch_counter = 0
     # TODO: probably use convergence criterion
-    # TODO: tqdm should be optional (only when verbose is True)
-    for i in tqdm(range(max_iterations)):
+    iterator = tqdm(range(max_iterations)) if verbose else range(max_iterations)
+    for i in iterator:
         if verbose and i % print_every == 0:
             print(best_solution)
         new_generation = mutation(crossover(population))
