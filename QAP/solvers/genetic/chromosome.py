@@ -12,8 +12,7 @@ class Chromosome(SolutionRepresentation):
         calculate_cost: (optional) weather to calculate cost function (we don't want to do it for elements that can be discarded immediately) # noqa
     """
     def __init__(self, permutation: np.ndarray, calculate_cost=True):
-        self.permutation = permutation
-        self.cost = Chromosome.objective(permutation) if calculate_cost else -1
+        super().__init__(permutation, calculate_cost)
 
     # basic utility functions
     def __gt__(self, other):
@@ -27,6 +26,3 @@ class Chromosome(SolutionRepresentation):
 
     def __hash__(self):
         return hash(tuple(self.permutation))
-
-    def __str__(self):
-        return f'result: {self.cost}, permutation: {self.permutation}'

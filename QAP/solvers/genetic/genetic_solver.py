@@ -78,8 +78,8 @@ def genetic_solver(n: int,
     best_solution = max(population)
     bad_epoch_counter = 0
     # TODO: probably use convergence criterion
-    # TODO: tqdm should be optional (only when verbose is True)
-    for i in tqdm(range(max_iterations)):
+    iterator = tqdm(range(max_iterations)) if verbose else range(max_iterations)
+    for i in iterator:
         if verbose and i % print_every == 0:
             print(best_solution)
         new_generation = mutation(crossover(population))

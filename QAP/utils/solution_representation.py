@@ -11,9 +11,9 @@ class SolutionRepresentation:
     """
     objective: Callable[[np.ndarray], int] = None
 
-    def __init__(self, permutation):
+    def __init__(self, permutation, calculate_cost=True):
         self.permutation = permutation
-        self.cost = self.objective(permutation)
+        self.cost = self.objective(permutation) if calculate_cost else -1
 
     def calculate_cost(self):
         """Calculates objective function for permutation.
@@ -22,3 +22,6 @@ class SolutionRepresentation:
         """
         self.cost = self.objective(self.permutation)
         return self
+
+    def __str__(self):
+        return f'result: {self.cost}, permutation: {self.permutation}'

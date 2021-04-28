@@ -1,6 +1,6 @@
 from QAP.utils import load_solution, load_example
 from QAP.objective import objective
-from QAP.solvers.genetic import genetic_solver
+from QAP.solvers.bees import bees_solver
 from QAP.solvers.selection_mechanisms import BestFit
 from QAP.solvers.mutation_mechanisms import ShiftMutation, SwapMutation, UniformMutationScheduler
 import numpy as np
@@ -13,20 +13,23 @@ if __name__ == '__main__':
                             permutation), "something wrong with objective"
 
     # TODO: hiperparameter tuning with WandB?
-    mutation_mutations = (SwapMutation(mutation_prob=0.3), ShiftMutation())
-    res = genetic_solver(
+    mutation_mutations = (SwapMutation(mutation_prob=1), ShiftMutation())
+    res = bees_solver(
         n,
         dists,
         costs,
         objective,
         max_iterations=1000,
-        population_size=100,
+        population_size=500,
         verbose=True,
         print_every=100,
-        selection_size=100,
-        crossover_count=50,
+        elite_population=20,
+        selected_population=300,
+        elite_search_size=20,
+        selected_search_size=10,
+        solution_lifetime=20,
+        bad_epoch_patience=40,
         mutation_mechanism=UniformMutationScheduler,
-        # mutation_prob=0.1,
         mutation_mutations=mutation_mutations,
     )
 

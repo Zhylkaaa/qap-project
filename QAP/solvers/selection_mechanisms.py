@@ -37,4 +37,10 @@ class RouletteWheel(SelectionMechanism):
 
 
 class BestFit(SelectionMechanism):
-    pass
+    def __init__(self, selection_size: int = 100):
+        self.selection_size = selection_size
+
+    def select(self,
+               population: np.ndarray) -> np.ndarray:
+        # TODO: add option to indicate that array is sorted? (in bees algorithm this is the case)
+        return np.sort(population)[:self.selection_size]
