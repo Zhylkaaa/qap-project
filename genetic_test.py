@@ -34,3 +34,4 @@ if __name__ == '__main__':
     print(f'result permutation: {res.permutation}')
     print(f'result solution: {res.cost}')
     print(f'optimal solution: {opt}')
+    print(f'relative error: {(res.cost - opt) / opt}')
