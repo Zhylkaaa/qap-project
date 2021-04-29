@@ -29,6 +29,7 @@ if __name__ == '__main__':
         selected_search_size=10,
         solution_lifetime=20,
         bad_epoch_patience=40,
+        thread_pool_size=12,
         mutation_mechanism=UniformMutationScheduler,
         mutation_mutations=mutation_mutations,
     )

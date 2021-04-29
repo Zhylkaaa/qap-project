@@ -35,6 +35,7 @@ class Location(SolutionRepresentation):
             self.permutation = best_neighbour.permutation
         else:
             self.increase_age()
+        return self
 
     def __lt__(self, other):
         return self.cost < other.cost
