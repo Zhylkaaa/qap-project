@@ -5,30 +5,35 @@ from typing import Tuple, List
 
 
 def _parse_matrix(n: int,
-                  rows: List[str],
-                  offset: int = 0) -> Tuple[np.ndarray, int]:
+                  rows: List[str]) -> Tuple[np.ndarray, List[str]]:
     """Parses through rows accounting for different data formats in QAPLib.
 
     Args:
         n: expected size of matrix
         rows: rows containing data from both matrices
-        offset: (optional) specifies offset for matrix of interest
 
     Returns:
-        resulting ndarray and offset for next matrix in the file
+        resulting ndarray and rest of rows for next matrix in the file
     """
     result = []
-    step = n // len(rows[offset].split())
+    row = []
+    row_len = 0
 
-    for i in range(offset, step * n + offset, step):
-        row = '\t'.join(rows[i:i + step])
-        row = list(map(int, row.split()))
+    for idx, r in enumerate(rows):
+        row_len += len(r.strip().split())
+        row.append(r.strip())
+        if row_len == n:
+            result.append(list(map(int, ('\t'.join(row)).split())))
+            row = []
+            row_len = 0
+            if len(result) == n:
+                return np.array(result), rows[idx+1:]
+        if row_len > n:
+            raise ValueError('something is wrong with data formatting')
 
-        result.append(row)
-    return np.array(result), step * n + offset
+    return np.array(result), []
 
 
-# TODO: fix: nug30 problem isn't readable for example
 def load_example(file_path: str,
                  check_prefix: bool = True,
                  dist_first: bool = True) -> Tuple[int, np.ndarray, np.ndarray]:
@@ -55,8 +60,8 @@ def load_example(file_path: str,
     with open(file_path) as f:
         rows = [r for r in f.readlines() if not r.isspace()]
         n, rows = int(rows[0]), rows[1:]
-        dists, new_offset = _parse_matrix(n, rows)
-        costs, _ = _parse_matrix(n, rows, offset=new_offset)
+        dists, rows = _parse_matrix(n, rows)
+        costs, _ = _parse_matrix(n, rows)
 
     if dist_first:  # a bit ugly solution, but they could somehow unify the format, grrrr
         return n, dists, costs
