@@ -14,6 +14,22 @@ from ..mutation_mechanisms import MutationMechanism, UniformMutationScheduler, S
 from .location import Location
 from QAP.utils.solver_utils import generate_random_solutions
 from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
+import time
+
+
+def search_elite(elite, elite_search_size=1):
+    return elite.search_neighbourhood_elite(elite_search_size)
+
+
+def search_selected(selected, selected_search_size=1):
+    return selected.search_neighbourhood(selected_search_size)
+
+
+def init_fn():
+    s = int(time.time() * 100000) % 1000
+    np.random.seed(s)
+    print(f'worker seed {np.random.get_state()[1][0]}')
 
 
 def bees_solver(n: int,
@@ -33,6 +49,7 @@ def bees_solver(n: int,
                 elite_search_size: Union[float, int] = 0.02,
                 selected_search_size: Union[float, int] = 0.01,
                 bad_epoch_patience: int = 20,
+                thread_pool_size: int = 6,
                 **kwargs) -> np.ndarray:
     objective = partial(objective, dist, cost)
     Location.objective = objective
@@ -69,8 +86,14 @@ def bees_solver(n: int,
         for solution in generate_random_solutions(n, size=population_size)
     ])
 
+    p = Pool(thread_pool_size, initializer=init_fn)
+    #p = ThreadPoolExecutor(thread_pool_size, initializer=init_fn)
+
     bad_epoch_counter = 0
     best_solution = min(population)
+    search_elite_fn = partial(search_elite, elite_search_size=elite_search_size)
+    search_selected_fn = partial(search_selected, selected_search_size=selected_search_size)
+
     iterator = tqdm(range(max_iterations)) if verbose else range(max_iterations)
     for i in iterator:
         if verbose and i % print_every == 0:
@@ -81,9 +104,9 @@ def bees_solver(n: int,
 
         selected_locations = selection(other_locations)
 
-        elite_neighbourhood = [elite.search_neighbourhood_elite(elite_search_size) for elite in elite_locations]
-        for location in selected_locations:
-            location.search_neighbourhood(selected_search_size)
+        elite_neighbourhood = p.map(search_elite_fn, elite_locations)
+
+        selected_locations = p.map(search_selected_fn, selected_locations)
 
         random_locations = np.array([
             Location(solution, mutation)
