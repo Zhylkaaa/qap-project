@@ -105,6 +105,14 @@ if __name__ == "__main__":
         size, dists, costs = load_example(problems_folder + problem, dist_first=True)
         _, opt, permutation = load_solution(solutions_folder + solution)
 
+        if not opt == objective(dists, costs, permutation):
+            size, dists, costs = load_example(problems_folder + problem, dist_first=False)
+            _, opt, permutation = load_solution(solutions_folder + solution)
+
+        if not opt == objective(dists, costs, permutation):
+            print(problem + "could not be read!")
+            continue
+
         bees_result, bees_time = test_bees(size, dists, costs, reruns_number)
         genetic_result, genetic_time = test_genetic(size, dists, costs, reruns_number)
 
