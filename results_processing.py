@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
-    file_path = 'data/results.csv'
+    file_path = 'results/results.csv'
     df = pd.read_csv(file_path)
 
     charts_dir = 'data/charts/'

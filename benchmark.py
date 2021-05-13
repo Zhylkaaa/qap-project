@@ -90,7 +90,7 @@ def test_random(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: 
 
 
 if __name__ == "__main__":
-    data_folder = 'data/'
+    data_folder = 'results/'
     problems_folder = data_folder + 'qapdata/'
     solutions_folder = data_folder + 'qapsoln/'
     results_file = 'results.csv'
