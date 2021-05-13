@@ -13,7 +13,8 @@ def test_genetic(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number:
     mutation_mutations = (SwapMutation(mutation_prob=0.3), ShiftMutation())
     results = []
     times = []
-    for _ in range(reruns_number):
+    for i in range(reruns_number):
+        print("Genetic algorithm run: " + str(i + 1))
         start = time.time()
         res = genetic_solver(
             size,
@@ -42,7 +43,8 @@ def test_bees(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: in
     results = []
     times = []
 
-    for _ in range(reruns_number):
+    for i in range(reruns_number):
+        print("Bee's algorithm run: " + str(i + 1))
         start = time.time()
         res = bees_solver(
             size,
@@ -110,8 +112,10 @@ if __name__ == "__main__":
             _, opt, permutation = load_solution(solutions_folder + solution)
 
         if not opt == objective(dists, costs, permutation):
-            print(problem + "could not be read!")
+            print(problem + " could not be read!")
             continue
+
+        print("Processing problem: " + problem)
 
         bees_result, bees_time = test_bees(size, dists, costs, reruns_number)
         genetic_result, genetic_time = test_genetic(size, dists, costs, reruns_number)
