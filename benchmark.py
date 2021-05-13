@@ -72,11 +72,28 @@ def test_bees(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: in
     return sum(results) / len(results), sum(times) / len(times), min(results)
 
 
+def test_random(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: int = 3) -> Tuple[float, float, int]:
+    results = []
+    times = []
+    for i in range(reruns_number):
+        print("Random algorithm run: " + str(i + 1))
+        random_results = []
+        s = time.time()
+        for _ in range(100000):
+            random_results.append(objective(dists, costs, np.random.permutation(size)))
+        e = time.time()
+        times.append(e - s)
+
+        results.append(min(random_results))
+
+    return sum(results) / len(results), sum(times) / len(times), min(results)
+
+
 if __name__ == "__main__":
     data_folder = 'data/'
     problems_folder = data_folder + 'qapdata/'
     solutions_folder = data_folder + 'qapsoln/'
-    results_file = 'results_v2.csv'
+    results_file = 'results.csv'
     reruns_number = 3
 
     problems = [
@@ -115,17 +132,19 @@ if __name__ == "__main__":
             print(problem + " could not be read!")
             continue
 
+        print("Processing problem: " + problem)
+
         bees_result, bees_time, bees_best = test_bees(size, dists, costs, reruns_number)
         genetic_result, genetic_time, genetic_best = test_genetic(size, dists, costs, reruns_number)
-
-        print("Processing problem: " + problem)
+        random_result, random_time, random_best = test_random(size, dists, costs, reruns_number)
 
         results.append((problem, size, opt,
                         bees_result, bees_best, bees_time,
-                        genetic_result, genetic_best, genetic_time))
+                        genetic_result, genetic_best, genetic_time,
+                        random_result, random_best, random_time))
 
     with open(data_folder + results_file, 'w') as file:
-        file.write("problem_name,size,optimal_solution,bees_result,bees_best,bees_time,genetic_result,genetic_best,genetic_time\n")
+        file.write("problem_name,size,optimal_solution,bees_result,bees_best,bees_time,genetic_result,genetic_best,genetic_time,random_result,random_best,random_time\n")
         for line in results:
             file.write(",".join(map(lambda x: str(x), line)) + '\n')
 
