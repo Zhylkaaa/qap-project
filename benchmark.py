@@ -9,7 +9,7 @@ from QAP.solvers.mutation_mechanisms import SwapMutation, ShiftMutation, Uniform
 from QAP.utils import load_solution, load_example
 
 
-def test_genetic(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: int = 3) -> Tuple[float, float]:
+def test_genetic(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: int = 3) -> Tuple[float, float, int]:
     mutation_mutations = (SwapMutation(mutation_prob=0.3), ShiftMutation())
     results = []
     times = []
@@ -34,10 +34,10 @@ def test_genetic(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number:
         results.append(res.cost)
         times.append(end - start)
 
-    return sum(results) / len(results), sum(times) / len(times)
+    return sum(results) / len(results), sum(times) / len(times), min(results)
 
 
-def test_bees(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: int = 3) -> Tuple[float, float]:
+def test_bees(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: int = 3) -> Tuple[float, float, int]:
     mutation_mutations = (SwapMutation(mutation_prob=1), ShiftMutation())
     results = []
     times = []
@@ -50,13 +50,13 @@ def test_bees(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: in
             costs,
             objective,
             max_iterations=1000,
-            population_size=500,
+            population_size=100,
             verbose=True,
             print_every=100,
-            elite_population=20,
-            selected_population=300,
-            elite_search_size=20,
-            selected_search_size=10,
+            elite_population=5,
+            selected_population=50,
+            elite_search_size=10,
+            selected_search_size=7,
             solution_lifetime=20,
             bad_epoch_patience=40,
             thread_pool_size=12,
@@ -67,14 +67,14 @@ def test_bees(size: int, dists: np.ndarray, costs: np.ndarray, reruns_number: in
         results.append(res.cost)
         times.append(end - start)
 
-    return sum(results) / len(results), sum(times) / len(times)
+    return sum(results) / len(results), sum(times) / len(times), min(results)
 
 
 if __name__ == "__main__":
     data_folder = 'data/'
     problems_folder = data_folder + 'qapdata/'
     solutions_folder = data_folder + 'qapsoln/'
-    results_file = 'results.csv'
+    results_file = 'results_v2.csv'
     reruns_number = 3
 
     problems = [
@@ -113,13 +113,15 @@ if __name__ == "__main__":
             print(problem + "could not be read!")
             continue
 
-        bees_result, bees_time = test_bees(size, dists, costs, reruns_number)
-        genetic_result, genetic_time = test_genetic(size, dists, costs, reruns_number)
+        bees_result, bees_time, bees_best = test_bees(size, dists, costs, reruns_number)
+        genetic_result, genetic_time, genetic_best = test_genetic(size, dists, costs, reruns_number)
 
-        results.append((problem, size, opt, bees_result, bees_time, genetic_result, genetic_time))
+        results.append((problem, size, opt,
+                        bees_result, bees_best, bees_time,
+                        genetic_result, genetic_best, genetic_time))
 
     with open(data_folder + results_file, 'w') as file:
-        file.write("problem_name,size,optimal_solution,bees_result,bees_time,genetic_result,genetic_time\n")
+        file.write("problem_name,size,optimal_solution,bees_result,bees_best,bees_time,genetic_result,genetic_best,genetic_time\n")
         for line in results:
             file.write(",".join(map(lambda x: str(x), line)) + '\n')
 
