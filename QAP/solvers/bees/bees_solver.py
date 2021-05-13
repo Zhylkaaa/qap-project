@@ -125,4 +125,6 @@ def bees_solver(n: int,
         else:
             best_solution = population_best
 
+    p.close()
+
     return best_solution
