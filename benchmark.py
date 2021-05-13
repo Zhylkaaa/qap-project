@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import os
 import numpy as np
 import time
 from QAP.objective import objective
@@ -121,12 +122,12 @@ if __name__ == "__main__":
     results = []
 
     for problem, solution in zip(problems, solutions):
-        size, dists, costs = load_example(problems_folder + problem, dist_first=True)
-        _, opt, permutation = load_solution(solutions_folder + solution)
+        size, dists, costs = load_example(os.path.join(problems_folder, problem), dist_first=True)
+        _, opt, permutation = load_solution(os.path.join(solutions_folder, solution))
 
         if not opt == objective(dists, costs, permutation):
-            size, dists, costs = load_example(problems_folder + problem, dist_first=False)
-            _, opt, permutation = load_solution(solutions_folder + solution)
+            size, dists, costs = load_example(os.path.join(problems_folder, problem), dist_first=False)
+            _, opt, permutation = load_solution(os.path.join(solutions_folder, solution))
 
         if not opt == objective(dists, costs, permutation):
             print(problem + " could not be read!")
@@ -143,7 +144,10 @@ if __name__ == "__main__":
                         genetic_result, genetic_best, genetic_time,
                         random_result, random_best, random_time))
 
-    with open(data_folder + results_file, 'w') as file:
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
+
+    with open(os.path.join(data_folder, results_file), 'w') as file:
         file.write("problem_name,size,optimal_solution,bees_result,bees_best,bees_time,genetic_result,genetic_best,genetic_time,random_result,random_best,random_time\n")
         for line in results:
             file.write(",".join(map(lambda x: str(x), line)) + '\n')
